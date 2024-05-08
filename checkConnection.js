@@ -67,7 +67,20 @@ class EthernetConnection
 
 const main = async () =>
 {
-    const connectionStatus = await EthernetConnection.status();
-    console.log("status: ", connectionStatus);
+    let connectionStatus = await EthernetConnection.status();
+
+    const checkConnection = async () => 
+    {
+        console.log("status: ", connectionStatus);
+        if (!connectionStatus)
+        {
+            connectionStatus = await EthernetConnection.ping();
+            setTimeout(() =>
+            {
+                checkConnection();
+            }, 1000);
+        }
+    };
+
 };
 main();
