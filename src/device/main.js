@@ -57,6 +57,7 @@ const peerConnectionConfig = {
 const peerConnection = new RTCPeerConnection(peerConnectionConfig);
 peerConnection.onicecandidate = async event =>
 {
+    socket.send(JSON.stringify({ 'data': "ice gen?", 'type': "device-msg" }))
     console.log("ice gen?");
     if (event.candidate != null)
         socket.send(JSON.stringify({ 'data': event.candidate, 'type': "ice" }));
@@ -69,14 +70,17 @@ peerConnection.onicecandidate = async event =>
 
 peerConnection.onsignalingstatechange = () =>
 {
+    socket.send(JSON.stringify({ 'data': peerConnection.signalingState, 'type': "device-msg" }))
     console.log('Signaling State:', peerConnection.signalingState);
 };
 peerConnection.onicegatheringstatechange = () =>
 {
+    socket.send(JSON.stringify({ 'data': peerConnection.iceGatheringState, 'type': "device-msg" }))
     console.log('ICE Gathering State:', peerConnection.iceGatheringState);
 };
 peerConnection.oniceconnectionstatechange = () =>
 {
+    socket.send(JSON.stringify({ 'data': peerConnection.iceConnectionState, 'type': "device-msg" }))
     console.log('ICE Connection State:', peerConnection.iceConnectionState);
 };
 
@@ -119,6 +123,7 @@ const main = async () =>
                 //     break;
 
                 case "offer":
+                    socket.send(JSON.stringify({ 'data': "Got offer, sending answer...", 'type': "device-msg" }))
                     console.log("Got offer, sending answer...");
                     const answer = await createAnswer(msg);
                     socket.send(JSON.stringify(answer));
@@ -126,11 +131,13 @@ const main = async () =>
                     break;
 
                 case "answer":
+
                     console.log("Got answer!");
                     await getAnswer(msg);
                     break;
 
                 case "ice":
+                    socket.send(JSON.stringify({ 'data': "Got ICE ICE BABY!", 'type': "device-msg" }))
                     console.log("Got ICE ICE BABY!");
                     peerConnection.addIceCandidate(new RTCIceCandidate(msg.data));
                     break;
