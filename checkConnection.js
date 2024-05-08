@@ -23,7 +23,7 @@ class EthernetConnection
         {
             const pingCommand = "ping -S 192.168.0.1 -w 300 -n 1 192.168.0.2";
             const { stdout } = await this.executeCommand(pingCommand);
-            console.log(stdout);
+            // console.log(stdout);
             if (stdout.includes("Reply from 192.168.0.2"))
             {
                 console.log("Mobile device is connected over Ethernet");
@@ -51,10 +51,11 @@ class EthernetConnection
             {
                 const restartCommand = "netsh interface set interface Ethernet admin=disable && netsh interface set interface Ethernet admin=enable";
                 const { stdout } = await this.executeCommand(restartCommand);
-                console.log(stdout);
+                // console.log(stdout);
                 console.log("Ethernet interface restarted successfully");
                 return false;
             }
+            return true;
         }
         catch (error)
         {
@@ -67,6 +68,6 @@ class EthernetConnection
 const main = async () =>
 {
     const connectionStatus = await EthernetConnection.status();
-    console.log(connectionStatus);
+    console.log("status: ", connectionStatus);
 };
 main();
