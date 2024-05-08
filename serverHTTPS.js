@@ -1,16 +1,54 @@
-const express = require("express");
-const path = require("path");
-const https = require("https");
-const fs = require("fs");
-const { WebSocketServer } = require("ws");
-const dgram = require('dgram');
+class ServerHTTPS
+{
+    //includes
+    static express;
+    static path;
+    static https;
+    static fs;
+    static dgram;
 
 
-const app = express();
-const port = 3000;
+    //other
+    static app;
+    static port = 3000;
 
-const privateKey = fs.readFileSync("./key.pem", "utf8");
-const certificate = fs.readFileSync("./cert.pem", "utf8");
-const credentials = { key: privateKey, cert: certificate, passphrase: "1234" };
 
-const udpclient = dgram.createSocket('udp4');
+    static privateKey;
+    static certificate;
+    static credentials;
+
+
+    static server;
+
+    static {
+        this.express = require("express");
+        this.path = require("path");
+        this.https = require("https");
+        this.fs = require("fs");
+        this.dgram = require('dgram');
+
+
+    }
+
+    static start()
+    {
+        this.privateKey = this.fs.readFileSync("./key.pem", "utf8");
+        this.certificate = this.fs.readFileSync("./cert.pem", "utf8");
+        this.credentials = { key: this.privateKey, cert: this.certificate, passphrase: "1234" };
+
+        this.app = this.express();
+        this.server = this.https.createServer(credentials, app);
+
+        app.use(express.static(path.join(__dirname, "src")));
+
+        server.listen(port, () =>
+        {
+          console.log(`Server is running on https://localhost:${port}`);
+        });
+    }
+
+
+}
+
+exports.ServerHTTPS = ServerHTTPS;
+
