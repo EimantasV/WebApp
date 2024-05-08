@@ -50,7 +50,7 @@ class EthernetConnection
             if (!res)
             {
                 const restartCommand = "netsh interface set interface Ethernet admin=disable && netsh interface set interface Ethernet admin=enable";
-                const { stdout } = await executeCommand(restartCommand);
+                const { stdout } = await this.executeCommand(restartCommand);
                 console.log(stdout);
                 console.log("Ethernet interface restarted successfully");
                 return false;
@@ -69,3 +69,4 @@ const main = async () =>
     const connectionStatus = await EthernetConnection.status();
     console.log(connectionStatus);
 };
+main();
