@@ -5,6 +5,6 @@ const main = async () =>
 {
     await EthernetConnection.waitForConnection();
     ServerHTTPS.start();
-    
+    console.log("Im here");
 };
 main();
