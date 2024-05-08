@@ -23,7 +23,7 @@ const setupMediaRecorder = async () =>
             facingMode: { ideal: "environment" },
             width: { ideal: 1920 },
             height: { ideal: 1080 },
-            frameRate: { ideal: 60 },
+            frameRate: { ideal: 30 },
             // bitrate: { ideal: 20000000 }
             // width: { exact: 3840 },
             // height: { exact: 2160 },
