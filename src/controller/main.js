@@ -9,6 +9,7 @@ const peerConnectionConfig = {
 const peerConnection = new RTCPeerConnection(peerConnectionConfig);
 peerConnection.onicecandidate = async event =>
 {
+    console.log("ice gen?");
     if (event.candidate != null)
         socket.send(JSON.stringify({ 'data': event.candidate, 'type': "ice" }));
 };
