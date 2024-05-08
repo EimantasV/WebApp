@@ -37,13 +37,13 @@ class ServerHTTPS
         this.credentials = { key: this.privateKey, cert: this.certificate, passphrase: "1234" };
 
         this.app = this.express();
-        this.server = this.https.createServer(credentials, app);
+        this.server = this.https.createServer(this.credentials, this.app);
 
-        app.use(express.static(path.join(__dirname, "src")));
+        this.app.use(this.express.static(this.path.join(__dirname, "src")));
 
-        server.listen(port, () =>
+        this.server.listen(this.port, () =>
         {
-          console.log(`Server is running on https://localhost:${port}`);
+          console.log(`Server is running on https://localhost:${this.port}`);
         });
     }
 
