@@ -6,6 +6,7 @@ class ServerUDP
     static {
         this.dgram = require('dgram');
         this.udpclient = this.dgram.createSocket('udp4');
+        console.log("UDP server online");
     }
 
     static send(data)
