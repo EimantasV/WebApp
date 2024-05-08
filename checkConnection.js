@@ -69,18 +69,12 @@ const main = async () =>
 {
     let connectionStatus = await EthernetConnection.status();
 
-    const checkConnection = async () => 
+    while(!connectionStatus)
     {
-        console.log("status: ", connectionStatus);
-        if (!connectionStatus)
-        {
-            connectionStatus = await EthernetConnection.ping();
-            setTimeout(() =>
-            {
-                checkConnection();
-            }, 1000);
-        }
-    };
+        connectionStatus = await EthernetConnection.ping();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
 
 };
 main();
