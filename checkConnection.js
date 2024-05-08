@@ -19,15 +19,23 @@ class EthernetConnection
 
     static async ping()
     {
-        const pingCommand = "ping -S 192.168.0.1 -w 300 -n 1 192.168.0.2";
-        const { stdout } = await this.executeCommand(pingCommand);
-        console.log(stdout);
-        if (stdout.includes("Reply from 192.168.0.2"))
+        try
         {
-            console.log("Mobile device is connected over Ethernet");
-            return true;
+            const pingCommand = "ping -S 192.168.0.1 -w 300 -n 1 192.168.0.2";
+            const { stdout } = await this.executeCommand(pingCommand);
+            console.log(stdout);
+            if (stdout.includes("Reply from 192.168.0.2"))
+            {
+                console.log("Mobile device is connected over Ethernet");
+                return true;
+            }
+            else
+            {
+                console.log("Mobile device is NOT connected over Ethernet");
+                return false;
+            }
         }
-        else
+        catch (error)
         {
             console.log("Mobile device is NOT connected over Ethernet");
             return false;
@@ -39,7 +47,7 @@ class EthernetConnection
         try
         {
             const res = await this.ping();
-            if(!res)
+            if (!res)
             {
                 const restartCommand = "netsh interface set interface Ethernet admin=disable && netsh interface set interface Ethernet admin=enable";
                 const { stdout } = await executeCommand(restartCommand);
