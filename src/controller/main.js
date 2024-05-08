@@ -1,7 +1,7 @@
 const peerConnectionConfig = {
     'iceServers': [
         // {'urls': 'stun:192.168.0.1:3478'},
-        // {'urls': 'stun:stun.stunprotocol.org:3478'},
+        {'urls': 'stun:stun.stunprotocol.org:3478'},
         // {'urls': 'stun:stun.l.google.com:19302'},
     ]
 };

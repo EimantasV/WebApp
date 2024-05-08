@@ -49,7 +49,7 @@ const setupMediaRecorder = async () =>
 const peerConnectionConfig = {
     'iceServers': [
         // {'urls': 'stun:192.168.0.1:3478'},
-        // {'urls': 'stun:stun.stunprotocol.org:3478'},
+        {'urls': 'stun:stun.stunprotocol.org:3478'},
         // {'urls': 'stun:stun.l.google.com:19302'},
     ]
 };
@@ -70,17 +70,17 @@ peerConnection.onicecandidate = async event =>
 
 peerConnection.onsignalingstatechange = () =>
 {
-    socket.send(JSON.stringify({ 'data': peerConnection.signalingState, 'type': "device-msg" }))
+    socket.send(JSON.stringify({ 'data': `Signaling State: ${peerConnection.signalingState}`, 'type': "device-msg" }))
     console.log('Signaling State:', peerConnection.signalingState);
 };
 peerConnection.onicegatheringstatechange = () =>
 {
-    socket.send(JSON.stringify({ 'data': peerConnection.iceGatheringState, 'type': "device-msg" }))
+    socket.send(JSON.stringify({ 'data': `ICE Gathering State: ${peerConnection.iceGatheringState}`, 'type': "device-msg" }))
     console.log('ICE Gathering State:', peerConnection.iceGatheringState);
 };
 peerConnection.oniceconnectionstatechange = () =>
 {
-    socket.send(JSON.stringify({ 'data': peerConnection.iceConnectionState, 'type': "device-msg" }))
+    socket.send(JSON.stringify({ 'data': `ICE Connection State: ${peerConnection.iceConnectionState}`, 'type': "device-msg" }))
     console.log('ICE Connection State:', peerConnection.iceConnectionState);
 };
 
