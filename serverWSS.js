@@ -18,7 +18,6 @@ class ServerWSS
         this.wss = new this.WebSocketServer({ server: serverHTTPS });
         this.wss.on("listening", () =>
         {
-            wsIsOn = true;
             console.log("WSS server is online");
         });
 
@@ -26,7 +25,7 @@ class ServerWSS
         {
             console.log("User connected to Websocket!");
             let otherClient;
-            trySetupRTC(ws);
+            // trySetupRTC(ws);
 
             ws.on("message", msg =>
             {
