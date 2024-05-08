@@ -1,4 +1,4 @@
-const EthernetConnection = require("./ethernetConnection.js");
+const {EthernetConnection} = require("./ethernetConnection.js");
 
 
 const main = async () =>
