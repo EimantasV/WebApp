@@ -62,19 +62,22 @@ class EthernetConnection
             console.log(error);
         }
     }
+
+    static async waitForConnection()
+    {
+        let connectionStatus = await this.status();
+
+        while(!connectionStatus)
+        {
+            connectionStatus = await this.ping();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+    }
 }
 
 
 const main = async () =>
 {
-    let connectionStatus = await EthernetConnection.status();
-
-    while(!connectionStatus)
-    {
-        connectionStatus = await EthernetConnection.ping();
-        await new Promise(resolve => setTimeout(resolve, 1000));
-    }
-
-
+    await EthernetConnection.waitForConnection();
 };
 main();
