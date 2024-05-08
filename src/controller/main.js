@@ -1,4 +1,12 @@
-const peerConnection = new RTCPeerConnection();
+const peerConnectionConfig = {
+    'iceServers': [
+        // {'urls': 'stun:192.168.0.1:3478'},
+        // {'urls': 'stun:stun.stunprotocol.org:3478'},
+        // {'urls': 'stun:stun.l.google.com:19302'},
+    ]
+};
+
+const peerConnection = new RTCPeerConnection(peerConnectionConfig);
 peerConnection.onicecandidate = async event =>
 {
     if (event.candidate != null)
