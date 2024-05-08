@@ -7,7 +7,6 @@ const main = async () =>
 {
     await EthernetConnection.waitForConnection();
     ServerHTTPS.start();
-    ServerUDP;
     ServerWSS.start({serverHTTPS: ServerHTTPS.server, sendUDP: ServerUDP.send});
 
 };
