@@ -5,7 +5,6 @@ class ServerHTTPS
     static path;
     static https;
     static fs;
-    static dgram;
 
 
     //other
@@ -25,9 +24,6 @@ class ServerHTTPS
         this.path = require("path");
         this.https = require("https");
         this.fs = require("fs");
-        this.dgram = require('dgram');
-
-
     }
 
     static start()
