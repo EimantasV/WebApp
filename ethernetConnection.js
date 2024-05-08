@@ -75,9 +75,11 @@ class EthernetConnection
     }
 }
 
+exports.EthernetConnection = EthernetConnection;
 
-const main = async () =>
-{
-    await EthernetConnection.waitForConnection();
-};
-main();
+
+// const main = async () =>
+// {
+//     await EthernetConnection.waitForConnection();
+// };
+// main();
