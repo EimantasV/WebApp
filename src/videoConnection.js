@@ -24,9 +24,11 @@ class VideoConnection {
         const constraints = {
             video: {
                 facingMode: { ideal: "environment" },
-                width: { ideal: 1920 },
-                height: { ideal: 1080 },
-                frameRate: { ideal: 30 },
+                // width: { ideal: 1920 },
+                // height: { ideal: 1080 },
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                frameRate: { ideal: 20 },
             },
             audio: true,
         };
