@@ -70,6 +70,7 @@ const main = async () =>
 {
     try
     {
+        socket = new WebSocket(`wss://${window.location.hostname}:3000`);
 
         localStream = await setupMediaRecorder();
 
@@ -78,7 +79,7 @@ const main = async () =>
             peerConnection.addTrack(track, localStream);
         }
 
-        socket = new WebSocket(`wss://${window.location.hostname}:3000`);
+
 
         // wait getCamerasSpecs();
         socket.addEventListener('error', (error) =>
@@ -133,6 +134,7 @@ const main = async () =>
 
     } catch (error)
     {
+        socket.send(JSON.stringify({ 'data': `Main error: ${error}`, 'type': "device-msg" }));
         console.error('Error:', error);
     }
 };
