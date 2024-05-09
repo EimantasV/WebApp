@@ -8,14 +8,18 @@ class VideoConnection {
     static initializerStreamsOnly = true; // make it false if you want 2 way connection
 
     static {
-        // try {
-        this.localVideo = document.getElementById('localVideo');
-        if (this.localVideo) {
-            this.getVideoStream();
+        try {
+            this.localVideo = document.getElementById('localVideo');
+            if (this.localVideo) {
+                this.getVideoStream();
+            }
+            else {
+                this.isDesktop = true;
+                console.log("No local video stream, if this is desktop then okay.");
+            }
         }
-        else {
-            this.isDesktop = true;
-            console.log("No local video stream, if this is desktop then okay.");
+        catch {
+
         }
 
         this.remoteVideo = document.getElementById('remoteVideo');
@@ -81,8 +85,7 @@ class VideoConnection {
         };
         this.peerConnection.oniceconnectionstatechange = () => {
             console.log('ICE Connection State:', VideoConnection.peerConnection.iceConnectionState);
-            if(VideoConnection.peerConnection.iceConnectionState === "connected")
-            {
+            if (VideoConnection.peerConnection.iceConnectionState === "connected") {
                 WebSocketConnection.close();
             }
         };
