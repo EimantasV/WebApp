@@ -30,8 +30,11 @@ class ServerWSS {
                         sendUDP(`${input.data}`);
                         break;
 
+                    case "device-msg":
+                        console.log(`${input.data}`);
+                        break;
+
                     default:
-                        otherClient.send(`${msg}`);
                         console.log(`${msg}`);
                         break;
                 }
