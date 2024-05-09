@@ -78,7 +78,7 @@ const main = async () =>
             peerConnection.addTrack(track, localStream);
         }
 
-        socket = new WebSocket('wss://192.168.0.1:3000');
+        socket = new WebSocket(`wss://${window.location.hostname}:3000`);
 
         // wait getCamerasSpecs();
         socket.addEventListener('error', (error) =>
