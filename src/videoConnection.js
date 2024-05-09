@@ -81,6 +81,10 @@ class VideoConnection {
         };
         this.peerConnection.oniceconnectionstatechange = () => {
             console.log('ICE Connection State:', VideoConnection.peerConnection.iceConnectionState);
+            if(VideoConnection.peerConnection.iceConnectionState === "connected")
+            {
+                WebSocketConnection.close();
+            }
         };
         // }
     }
