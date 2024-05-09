@@ -62,7 +62,7 @@ class VideoConnection {
             for (const track of this.localStream.getTracks()) {
                 this.peerConnection.addTrack(track, this.localStream);
             }
-            this.peerConnection.createOffer().then(createdDescription).catch(errorHandler);
+            this.peerConnection.createOffer().then(this.createdDescription).catch(errorHandler);
         }
 
         if (this.isDesktop) {
