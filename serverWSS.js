@@ -1,17 +1,10 @@
-
 class ServerWSS {
-    //includes
     static WebSocketServer;
-
-    //other
     static wss;
-
-
     static {
         const { WebSocketServer } = require("ws");
         this.WebSocketServer = WebSocketServer;
     }
-
     static start({ serverHTTPS, sendUDP }) {
         this.wss = new this.WebSocketServer({ server: serverHTTPS });
         this.wss.on("listening", () => {
@@ -21,7 +14,6 @@ class ServerWSS {
         this.wss.on("connection", (ws) => {
             console.log("User connected to Websocket!");
             let otherClient;
-            // trySetupRTC(ws);
 
             ws.on("message", msg => {
                 if (!otherClient) otherClient = [...this.wss.clients].find(cli => cli !== ws);
@@ -44,11 +36,8 @@ class ServerWSS {
                         break;
                 }
             });
-
         });
     }
-
-
 }
 
 exports.ServerWSS = ServerWSS;

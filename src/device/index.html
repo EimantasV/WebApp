@@ -8,11 +8,16 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 
-<body>
-    <h1>Device</h1>
-    <video id="user-1" width="40%" height="auto" autoplay muted></video>
-    
-    <script src="./main.js"></script>
-</body>
+  <body>
+    <video id="localVideo" autoplay playsinline muted style="width:40%;"></video>
+    <video id="remoteVideo" autoplay playsinline style="width:40%;"></video>
 
+
+    <div style="margin-top: 10px;">
+      <input type="button" id="start" onclick="start(true)" value="Start WebRTC"></input>
+    </div>
+
+    <script src="../websocketConnection.js"></script>
+    <script src="../videoConnection.js"></script>
+  </body>
 </html>

@@ -4,14 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controller</title>
+    <title>Camera Streaming - Controller</title>
     <link rel="stylesheet" href="./style.css">
 </head>
 
-<body>
-    <video id="user-2" height="auto" autoplay></video>
-    <button onclick="start()">Connect</button>
-    <script src="./main.js"></script>
-</body>
+  <body>
+    <video id="remoteVideo" autoplay playsinline style="width:40%;"></video>
 
+
+
+    <script src="../websocketConnection.js"></script>
+    <script src="../videoConnection.js"></script>
+  </body>
 </html>
