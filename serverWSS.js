@@ -31,6 +31,7 @@ class ServerWSS {
                 switch (input.type) {
                     case "offer":
                     case "answer":
+                    case "sdp":
                     case "ice":
                         otherClient.send(`${msg}`);
                         break;
@@ -40,7 +41,6 @@ class ServerWSS {
                         break;
 
                     default:
-                        otherClient.send(`${msg}`);
                         console.log(`${msg}`);
                         break;
                 }
