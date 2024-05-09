@@ -73,7 +73,7 @@ function gotMessageFromServer(message)
     peerConnection.setRemoteDescription(new RTCSessionDescription(signal.data)).then(() =>
     {
       // Only create answers in response to offers
-      if (signal.sdp.type !== 'offer') return;
+      if (signal.data.type !== 'offer') return;
 
       peerConnection.createAnswer().then(createdDescription).catch(errorHandler);
     }).catch(errorHandler);
