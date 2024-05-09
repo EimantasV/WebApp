@@ -59,12 +59,11 @@ class VideoConnection {
         this.peerConnection.ontrack = this.gotRemoteStream;
 
         // put in initiliz
-        for (const track of this.localStream.getTracks()) {
-            this.peerConnection.addTrack(track, this.localStream);
-        }
 
         if (isInitializer) {
-
+            for (const track of this.localStream.getTracks()) {
+                this.peerConnection.addTrack(track, this.localStream);
+            }
             this.peerConnection.createOffer().then(VideoConnection.createdDescription);
         }
 
