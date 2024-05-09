@@ -2,22 +2,26 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camera Streaming - Sender</title>
-    <link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camera Streaming - Sender</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
 
-  <body>
-    <div id="mobileTag" style="height: 30vw;"></div>
-    <video id="localVideo" autoplay playsinline muted style="display: none;"></video>
-    <video id="remoteVideo" autoplay playsinline style="display: none;"></video>
+<body>
+  <div id="mobileTag" style="height: 30vw;"></div>
+  <video id="localVideo" autoplay playsinline muted style="display: none;"></video>
+  <video id="remoteVideo" autoplay playsinline style="display: none;"></video>
 
-    <button id="toggle1" onclick="VideoConnection.start(true); document.getElementById('toggle1').style.display = 'none'; document.getElementById('toggle2').style.display = 'grid';" style="width: 100px; height: 50px;">Send Video</button>
-    <h1 id="toggle2" style="display: none; color: white;">Video is being transmitted</h1>
+  <button id="toggle1" onclick="VideoConnection.start(true); 
+    document.getElementById('toggle1').style.display = 'none'; 
+    document.getElementById('toggle2').style.display = 'grid';" style="width: 100px; height: 50px;">Send Video</button>
 
-    <script src="../videoConnection.js"></script>
-    <script src="../websocketConnection.js"></script>
+  <h1 id="toggle2" style="display: none;">Video is being transmitted</h1>
 
-  </body>
+  <script src="../videoConnection.js"></script>
+  <script src="../websocketConnection.js"></script>
+
+</body>
+
 </html>
