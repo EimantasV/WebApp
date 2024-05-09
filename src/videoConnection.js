@@ -69,31 +69,31 @@ class VideoConnection {
 
         if (this.isDesktop) {
             this.peerConnection.onsignalingstatechange = () => {
-                console.log('Signaling State:', peerConnection.signalingState);
+                console.log('Signaling State:', VideoConnection.peerConnection.signalingState);
             };
             this.peerConnection.onicegatheringstatechange = () => {
-                console.log('ICE Gathering State:', peerConnection.iceGatheringState);
+                console.log('ICE Gathering State:', VideoConnection.peerConnection.iceGatheringState);
             };
             this.peerConnection.oniceconnectionstatechange = () => {
-                console.log('ICE Connection State:', peerConnection.iceConnectionState);
+                console.log('ICE Connection State:', VideoConnection.peerConnection.iceConnectionState);
             };
         }
     }
     static handleServerMessage(message) {
         console.log(message)
-        if (!this.peerConnection) start(false);
+        if (!VideoConnection.peerConnection) VideoConnection.start(false);
 
         const signal = JSON.parse(message.data);
 
         if (signal.type === "sdp") {
-            this.peerConnection.setRemoteDescription(new RTCSessionDescription(signal.data)).then(() => {
+            VideoConnection.peerConnection.setRemoteDescription(new RTCSessionDescription(signal.data)).then(() => {
                 // Only create answers in response to offers
                 if (signal.data.type !== 'offer') return;
 
-                this.peerConnection.createAnswer().then(this.createdDescription);
+                VideoConnection.peerConnection.createAnswer().then(VideoConnection.createdDescription);
             });
         } else if (signal.type === "ice") {
-            this.peerConnection.addIceCandidate(new RTCIceCandidate(signal.data));
+            VideoConnection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.data));
         }
     }
     static gotIceCandidate(event) {
@@ -113,6 +113,6 @@ class VideoConnection {
 
     static gotRemoteStream(event) {
         console.log('got remote stream');
-        this.remoteVideo.srcObject = event.streams[0];
+        VideoConnection.remoteVideo.srcObject = event.streams[0];
     }
 }
