@@ -54,8 +54,8 @@ class VideoConnection {
             ]
         };
         this.peerConnection = new RTCPeerConnection(peerConnectionConfig);
-        this.peerConnection.onicecandidate = gotIceCandidate;
-        this.peerConnection.ontrack = gotRemoteStream;
+        this.peerConnection.onicecandidate = this.gotIceCandidate;
+        this.peerConnection.ontrack = this.gotRemoteStream;
 
 
         if (isInitializer) {
@@ -87,10 +87,10 @@ class VideoConnection {
                 // Only create answers in response to offers
                 if (signal.data.type !== 'offer') return;
 
-                this.peerConnection.createAnswer().then(createdDescription).catch(errorHandler);
-            }).catch(errorHandler);
+                this.peerConnection.createAnswer().then(this.createdDescription).catch(console.log("fail 90"));
+            }).catch(console.log("fail 90"));
         } else if (signal.type === "ice") {
-            this.peerConnection.addIceCandidate(new RTCIceCandidate(signal.data)).catch(errorHandler);
+            this.peerConnection.addIceCandidate(new RTCIceCandidate(signal.data)).catch(console.log("fail 90"));
         }
     }
     static gotIceCandidate(event) {
