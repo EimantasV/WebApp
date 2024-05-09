@@ -102,8 +102,8 @@ class VideoConnection {
     static createdDescription(description) {
         console.log('got description');
 
-        this.peerConnection.setLocalDescription(description).then(() => {
-            WebSocketConnection.WS.send(JSON.stringify({ 'data': this.peerConnection.localDescription, 'type': "sdp" }));
+        VideoConnection.peerConnection.setLocalDescription(description).then(() => {
+            WebSocketConnection.WS.send(JSON.stringify({ 'data': VideoConnection.peerConnection.localDescription, 'type': "sdp" }));
         }).catch(errorHandler);
     }
 
