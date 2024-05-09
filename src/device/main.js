@@ -2,11 +2,13 @@ const getCamerasSpecs = async () =>
 {
     const devices = await navigator.mediaDevices.enumerateDevices();
 
-    for (const device of devices) {
+    for (const device of devices)
+    {
         // console.log(device);
 
         // socket.send(JSON.stringify(device));
-        if ('getCapabilities' in device) {
+        if ('getCapabilities' in device)
+        {
             const capabilities = device.getCapabilities();
             console.log(JSON.stringify(capabilities));
             socket.send(JSON.stringify(capabilities));
@@ -32,7 +34,8 @@ const setupMediaRecorder = async () =>
         audio: true
     };
 
-    try {
+    try
+    {
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         // console.log('Stream obtained with requested constraints:', stream);
         const videoElement = document.getElementById('user-1');
@@ -40,7 +43,8 @@ const setupMediaRecorder = async () =>
         // socket.send(JSON.stringify({type:"msg", data: stream}))
         return stream;
     }
-    catch (error) {
+    catch (error)
+    {
         // socket.send(JSON.stringify({type:"msg", data: error}))
         console.error('Error accessing the camera with constraints:', error);
     }
@@ -49,40 +53,13 @@ const setupMediaRecorder = async () =>
 const peerConnectionConfig = {
     'iceServers': [
         // {'urls': 'stun:192.168.0.1:3478'},
-        {'urls': 'stun:stun.stunprotocol.org:3478'},
+        { 'urls': 'stun:stun.stunprotocol.org:3478' },
         // {'urls': 'stun:stun.l.google.com:19302'},
     ]
 };
 
-const peerConnection = new RTCPeerConnection(peerConnectionConfig);
-peerConnection.onicecandidate = async event =>
-{
-    socket.send(JSON.stringify({ 'data': "ice gen?", 'type': "device-msg" }))
-    console.log("ice gen?");
-    if (event.candidate != null)
-        socket.send(JSON.stringify({ 'data': event.candidate, 'type': "ice" }));
-};
-// peerConnection.ontrack = async event =>
-// {
-//     console.log("got track ans");
-//     document.getElementById("user-2").srcObject = event.streams[0];
-// };
+let peerConnection;// = new RTCPeerConnection(peerConnectionConfig);
 
-peerConnection.onsignalingstatechange = () =>
-{
-    socket.send(JSON.stringify({ 'data': `Signaling State: ${peerConnection.signalingState}`, 'type': "device-msg" }))
-    console.log('Signaling State:', peerConnection.signalingState);
-};
-peerConnection.onicegatheringstatechange = () =>
-{
-    socket.send(JSON.stringify({ 'data': `ICE Gathering State: ${peerConnection.iceGatheringState}`, 'type': "device-msg" }))
-    console.log('ICE Gathering State:', peerConnection.iceGatheringState);
-};
-peerConnection.oniceconnectionstatechange = () =>
-{
-    socket.send(JSON.stringify({ 'data': `ICE Connection State: ${peerConnection.iceConnectionState}`, 'type': "device-msg" }))
-    console.log('ICE Connection State:', peerConnection.iceConnectionState);
-};
 
 let socket;
 let localStream;
@@ -91,11 +68,13 @@ let remoteStream;
 
 const main = async () =>
 {
-    try {
+    try
+    {
 
         localStream = await setupMediaRecorder();
 
-        for (const track of localStream.getTracks()) {
+        for (const track of localStream.getTracks())
+        {
             peerConnection.addTrack(track, localStream);
         }
 
@@ -115,7 +94,8 @@ const main = async () =>
         {
             const msg = JSON.parse(_msg.data);
             console.log(msg);
-            switch (msg.type) {
+            switch (msg.type)
+            {
                 // case "req":
                 //     console.log("Sending offer...");
                 //     const offer = await createOffer();
@@ -123,7 +103,10 @@ const main = async () =>
                 //     break;
 
                 case "offer":
-                    socket.send(JSON.stringify({ 'data': "Got offer, sending answer...", 'type': "device-msg" }))
+
+                    loadRTC();
+
+                    socket.send(JSON.stringify({ 'data': "Got offer, sending answer...", 'type': "device-msg" }));
                     console.log("Got offer, sending answer...");
                     const answer = await createAnswer(msg);
                     socket.send(JSON.stringify(answer));
@@ -137,7 +120,7 @@ const main = async () =>
                     break;
 
                 case "ice":
-                    socket.send(JSON.stringify({ 'data': "Got ICE ICE BABY!", 'type': "device-msg" }))
+                    socket.send(JSON.stringify({ 'data': "Got ICE ICE BABY!", 'type': "device-msg" }));
                     console.log("Got ICE ICE BABY!");
                     peerConnection.addIceCandidate(new RTCIceCandidate(msg.data));
                     break;
@@ -148,22 +131,54 @@ const main = async () =>
             }
         });
 
-    } catch (error) {
+    } catch (error)
+    {
         console.error('Error:', error);
     }
 };
 
 main();
 
+const loadRTC = () =>
+{
+    peerConnection = new RTCPeerConnection(peerConnectionConfig);
+    peerConnection.onicecandidate = async event =>
+    {
+        socket.send(JSON.stringify({ 'data': "ice gen?", 'type': "device-msg" }));
+        console.log("ice gen?");
+        if (event.candidate != null)
+            socket.send(JSON.stringify({ 'data': event.candidate, 'type': "ice" }));
+    };
+
+
+    peerConnection.onsignalingstatechange = () =>
+    {
+        socket.send(JSON.stringify({ 'data': `Signaling State: ${peerConnection.signalingState}`, 'type': "device-msg" }));
+        console.log('Signaling State:', peerConnection.signalingState);
+    };
+    peerConnection.onicegatheringstatechange = () =>
+    {
+        socket.send(JSON.stringify({ 'data': `ICE Gathering State: ${peerConnection.iceGatheringState}`, 'type': "device-msg" }));
+        console.log('ICE Gathering State:', peerConnection.iceGatheringState);
+    };
+    peerConnection.oniceconnectionstatechange = () =>
+    {
+        socket.send(JSON.stringify({ 'data': `ICE Connection State: ${peerConnection.iceConnectionState}`, 'type': "device-msg" }));
+        console.log('ICE Connection State:', peerConnection.iceConnectionState);
+    };
+};
+
 const sendHTTP = async (data) =>
 {
     const url = 'http://192.168.0.2';
 
-    try {
+    try
+    {
         const response = await fetch(url);
 
         // Check if the request was successful (status code 200 OK)
-        if (!response.ok) {
+        if (!response.ok)
+        {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
@@ -172,7 +187,8 @@ const sendHTTP = async (data) =>
 
         // Handle the data from the response
         console.log(data);
-    } catch (error) {
+    } catch (error)
+    {
         // Handle errors during the fetch
         console.error('Fetch error:', error);
     }
@@ -203,7 +219,8 @@ async function makeHttpRequest(postdata)
 {
     const url = `http://192.168.61.99:4000`;
     // log(url)
-    try {
+    try
+    {
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -212,15 +229,17 @@ async function makeHttpRequest(postdata)
             body: JSON.stringify(postdata),
         });
 
-        if (!response.ok) {
+        if (!response.ok)
+        {
             // log(`HTTP error! Status: ${response.status}`)
 
         }
 
         const data = await response.json();
         // log(`HTTP Request Successful: ${data}`);
-    } catch (error) {
-        socket.send( JSON.stringify ({type:"debug",data: `HTTP Error: ${error}`}));
+    } catch (error)
+    {
+        socket.send(JSON.stringify({ type: "debug", data: `HTTP Error: ${error}` }));
         // log(`HTTP Error: ${error}`);
     }
 }

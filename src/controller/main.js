@@ -1,37 +1,13 @@
 const peerConnectionConfig = {
     'iceServers': [
         // {'urls': 'stun:192.168.0.1:3478'},
-        {'urls': 'stun:stun.stunprotocol.org:3478'},
+        // {'urls': 'stun:stun.stunprotocol.org:3478'},
         // {'urls': 'stun:stun.l.google.com:19302'},
     ]
 };
 
-const peerConnection = new RTCPeerConnection(peerConnectionConfig);
-peerConnection.onicecandidate = async event =>
-{
-    console.log("ice gen?");
-    if (event.candidate != null)
-        socket.send(JSON.stringify({ 'data': event.candidate, 'type': "ice" }));
-};
-peerConnection.ontrack = async event =>
-{
-    console.log("got track ans");
-    document.getElementById("user-2").srcObject = event.streams[0];
+let peerConnection;// = new RTCPeerConnection(peerConnectionConfig);
 
-};
-
-peerConnection.onsignalingstatechange = () =>
-{
-    console.log('Signaling State:', peerConnection.signalingState);
-};
-peerConnection.onicegatheringstatechange = () =>
-{
-    console.log('ICE Gathering State:', peerConnection.iceGatheringState);
-};
-peerConnection.oniceconnectionstatechange = () =>
-{
-    console.log('ICE Connection State:', peerConnection.iceConnectionState);
-};
 
 let socket;
 let localStream;
@@ -42,7 +18,7 @@ const main = async () =>
 {
     try
     {
-        socket = new WebSocket('wss://192.168.0.1:3000');
+        socket = new WebSocket(`wss://${window.location.hostname}:3000`);
 
         // wait getCamerasSpecs();
         socket.addEventListener('error', (error) =>
@@ -93,8 +69,36 @@ const main = async () =>
 
 main();
 
-const makeOffer = async () =>
+const start = async () =>
 {
+    peerConnection = new RTCPeerConnection(peerConnectionConfig);
+
+    peerConnection.onicecandidate = event =>
+    {
+        console.log("ice gen?");
+        if (event.candidate != null)
+            socket.send(JSON.stringify({ 'data': event.candidate, 'type': "ice" }));
+    };
+    peerConnection.ontrack = async event =>
+    {
+        console.log("got track ans");
+        document.getElementById("user-2").srcObject = event.streams[0];
+
+    };
+
+    peerConnection.onsignalingstatechange = () =>
+    {
+        console.log('Signaling State:', peerConnection.signalingState);
+    };
+    peerConnection.onicegatheringstatechange = () =>
+    {
+        console.log('ICE Gathering State:', peerConnection.iceGatheringState);
+    };
+    peerConnection.oniceconnectionstatechange = () =>
+    {
+        console.log('ICE Connection State:', peerConnection.iceConnectionState);
+    };
+
     console.log("Sending offer...");
     const offer = await createOffer();
     socket.send(JSON.stringify(offer));
