@@ -62,7 +62,7 @@ class VideoConnection {
         this.peerConnection.onicecandidate = this.gotIceCandidate;
         this.peerConnection.ontrack = this.gotRemoteStream;
 
-        if (isInitializer && initializerStreamsOnly) {
+        if (isInitializer && this.initializerStreamsOnly) {
             for (const track of this.localStream.getTracks()) {
                 this.peerConnection.addTrack(track, this.localStream);
             }
