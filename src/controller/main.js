@@ -73,18 +73,8 @@ const start = async () =>
 {
     peerConnection = new RTCPeerConnection(peerConnectionConfig);
 
-    peerConnection.onicecandidate = event =>
-    {
-        console.log("ice gen?");
-        if (event.candidate != null)
-            socket.send(JSON.stringify({ 'data': event.candidate, 'type': "ice" }));
-    };
-    peerConnection.ontrack = async event =>
-    {
-        console.log("got track ans");
-        document.getElementById("user-2").srcObject = event.streams[0];
-
-    };
+    peerConnection.onicecandidate = iceCandidate;
+    peerConnection.ontrack = gotTrack;
 
     peerConnection.onsignalingstatechange = () =>
     {
@@ -104,15 +94,28 @@ const start = async () =>
     socket.send(JSON.stringify(offer));
 };
 
+const gotTrack = event =>
+{
+    console.log("got track ans");
+    document.getElementById("user-2").srcObject = event.streams[0];
+
+};
+
+const iceCandidate = (event) =>
+{
+    console.log("ice gen?");
+    if (event.candidate != null)
+        socket.send(JSON.stringify({ 'data': event.candidate, 'type': "ice" }));
+};
+
 const createOffer = async () =>
 {
-
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(new RTCSessionDescription(offer));
     return peerConnection.localDescription;
 };
 
-const getAnswer = async (answer) =>
+const getAnswer = (answer) =>
 {
     peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
 };

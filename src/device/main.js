@@ -135,13 +135,8 @@ const loadRTC = () =>
     {
         peerConnection.addTrack(track, localStream);
     }
-    peerConnection.onicecandidate = async event =>
-    {
-        socket.send(JSON.stringify({ 'data': "ice gen?", 'type': "device-msg" }));
-        console.log("ice gen?");
-        if (event.candidate != null)
-            socket.send(JSON.stringify({ 'data': event.candidate, 'type': "ice" }));
-    };
+    peerConnection.onicecandidate = iceCandidate;
+
 
     peerConnection.onsignalingstatechange = () =>
     {
@@ -161,6 +156,14 @@ const loadRTC = () =>
 
 
 
+};
+
+const iceCandidate = (event) =>
+{
+    socket.send(JSON.stringify({ 'data': "ice gen?", 'type': "device-msg" }));
+    console.log("ice gen?");
+    if (event.candidate != null)
+        socket.send(JSON.stringify({ 'data': event.candidate, 'type': "ice" }));
 };
 
 const sendHTTP = async (data) =>
