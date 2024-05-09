@@ -29,8 +29,6 @@ class ServerWSS {
                 const input = JSON.parse(`${msg}`);
                 console.log("Server got:", input.type);
                 switch (input.type) {
-                    case "offer":
-                    case "answer":
                     case "sdp":
                     case "ice":
                         otherClient.send(`${msg}`);
