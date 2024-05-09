@@ -112,14 +112,6 @@ const createOffer = async () =>
     return peerConnection.localDescription;
 };
 
-const createAnswer = async (offer) =>
-{
-    await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-    let answer = await peerConnection.createAnswer();
-    await peerConnection.setLocalDescription(new RTCSessionDescription(answer));
-    return peerConnection.localDescription;
-};
-
 const getAnswer = async (answer) =>
 {
     peerConnection.setRemoteDescription(new RTCSessionDescription(answer));

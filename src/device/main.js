@@ -37,15 +37,13 @@ const setupMediaRecorder = async () =>
     try
     {
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        // console.log('Stream obtained with requested constraints:', stream);
         const videoElement = document.getElementById('user-1');
         videoElement.srcObject = stream;
-        // socket.send(JSON.stringify({type:"msg", data: stream}))
         return stream;
     }
     catch (error)
     {
-        // socket.send(JSON.stringify({type:"msg", data: error}))
+        socket.send(JSON.stringify({ type: "device-msg", data: `Media recorder: ${error}` }));
         console.error('Error accessing the camera with constraints:', error);
     }
 };
@@ -73,9 +71,6 @@ const main = async () =>
         socket = new WebSocket(`wss://${window.location.hostname}:3000`);
 
         localStream = await setupMediaRecorder();
-
-
-
 
         // wait getCamerasSpecs();
         socket.addEventListener('error', (error) =>
@@ -110,11 +105,6 @@ const main = async () =>
 
                     break;
 
-                case "answer":
-
-                    console.log("Got answer!");
-                    await getAnswer(msg);
-                    break;
 
                 case "ice":
                     socket.send(JSON.stringify({ 'data': "Got ICE ICE BABY!", 'type': "device-msg" }));
@@ -140,6 +130,11 @@ main();
 const loadRTC = () =>
 {
     peerConnection = new RTCPeerConnection(peerConnectionConfig);
+
+    for (const track of localStream.getTracks())
+    {
+        peerConnection.addTrack(track, localStream);
+    }
     peerConnection.onicecandidate = async event =>
     {
         socket.send(JSON.stringify({ 'data': "ice gen?", 'type': "device-msg" }));
@@ -147,7 +142,6 @@ const loadRTC = () =>
         if (event.candidate != null)
             socket.send(JSON.stringify({ 'data': event.candidate, 'type': "ice" }));
     };
-
 
     peerConnection.onsignalingstatechange = () =>
     {
@@ -165,10 +159,7 @@ const loadRTC = () =>
         console.log('ICE Connection State:', peerConnection.iceConnectionState);
     };
 
-    for (const track of localStream.getTracks())
-    {
-        peerConnection.addTrack(track, localStream);
-    }
+
 
 };
 
@@ -198,13 +189,6 @@ const sendHTTP = async (data) =>
     }
 };
 
-const createOffer = async () =>
-{
-
-    const offer = await peerConnection.createOffer();
-    await peerConnection.setLocalDescription(new RTCSessionDescription(offer));
-    return peerConnection.localDescription;
-};
 
 const createAnswer = async (offer) =>
 {
@@ -214,10 +198,6 @@ const createAnswer = async (offer) =>
     return peerConnection.localDescription;
 };
 
-const getAnswer = async (answer) =>
-{
-    peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-};
 
 async function makeHttpRequest(postdata)
 {
