@@ -17,7 +17,7 @@ class VideoConnection {
             console.log("No local video stream, if this is desktop then okay.");
         }
         this.remoteVideo = document.getElementById('remoteVideo');
-
+        WebSocketConnection.WS.onmessage = this.handleServerMessage;
     }
 
     static async getVideoStream() {
@@ -44,25 +44,25 @@ class VideoConnection {
             console.log(error);
         }
     }
-    static handleServerMessage(message) {
+        static handleServerMessage(message) {
         console.log("From server:", message);
-        if (!VideoConnection.peerConnection) VideoConnection.start(false);
+        if (!this.peerConnection) this.start(false);
 
         const signal = JSON.parse(message.data);
 
         if (signal.type === "sdp") {
-            VideoConnection.peerConnection.setRemoteDescription(new RTCSessionDescription(signal.data)).then(() => {
+            this.peerConnection.setRemoteDescription(new RTCSessionDescription(signal.data)).then(() => {
                 // Only create answers in response to offers
                 if (signal.data.type !== 'offer') return;
 
-                VideoConnection.peerConnection.createAnswer().then(VideoConnection.createdDescription);
+                this.peerConnection.createAnswer().then(this.createdDescription);
             });
         } else if (signal.type === "ice") {
-            VideoConnection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.data));
+            this.peerConnection.addIceCandidate(new RTCIceCandidate(signal.data));
         }
     }
     static start(isInitializer) {
-        WebSocketConnection.WS.onmessage = VideoConnection.handleServerMessage;
+
 
         const peerConnectionConfig = {
             'iceServers': [
@@ -70,28 +70,28 @@ class VideoConnection {
                 // {'urls': 'stun:stun.l.google.com:19302'},
             ]
         };
-        VideoConnection.peerConnection = new RTCPeerConnection(peerConnectionConfig);
-        VideoConnection.peerConnection.onicecandidate = VideoConnection.gotIceCandidate;
-        VideoConnection.peerConnection.ontrack = VideoConnection.gotRemoteStream;
+        this.peerConnection = new RTCPeerConnection(peerConnectionConfig);
+        this.peerConnection.onicecandidate = this.gotIceCandidate;
+        this.peerConnection.ontrack = this.gotRemoteStream;
 
         // put in initiliz
-        for (const track of VideoConnection.localStream.getTracks()) {
-            VideoConnection.peerConnection.addTrack(track, VideoConnection.localStream);
+        for (const track of this.localStream.getTracks()) {
+            this.peerConnection.addTrack(track, this.localStream);
         }
 
         if (isInitializer) {
 
-            VideoConnection.peerConnection.createOffer().then(VideoConnection.createdDescription);
+            this.peerConnection.createOffer().then(VideoConnection.createdDescription);
         }
 
-        if (VideoConnection.isDesktop) {
-            VideoConnection.peerConnection.onsignalingstatechange = () => {
+        if (this.isDesktop) {
+            this.peerConnection.onsignalingstatechange = () => {
                 console.log('Signaling State:', VideoConnection.peerConnection.signalingState);
             };
-            VideoConnection.peerConnection.onicegatheringstatechange = () => {
+            this.peerConnection.onicegatheringstatechange = () => {
                 console.log('ICE Gathering State:', VideoConnection.peerConnection.iceGatheringState);
             };
-            VideoConnection.peerConnection.oniceconnectionstatechange = () => {
+            this.peerConnection.oniceconnectionstatechange = () => {
                 console.log('ICE Connection State:', VideoConnection.peerConnection.iceConnectionState);
             };
         }
