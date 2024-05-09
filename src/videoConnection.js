@@ -3,20 +3,14 @@ class VideoConnection {
     static localVideo;
     static remoteVideo;
     static peerConnection;
-    static isDesktop = false;
 
     static initializerStreamsOnly = true; // make it false if you want 2 way connection
 
     static {
         try {
             this.localVideo = document.getElementById('localVideo');
-            if (this.localVideo) {
-                this.getVideoStream();
-            }
-            else {
-                this.isDesktop = true;
-                console.log("No local video stream, if this is desktop then okay.");
-            }
+            this.getVideoStream();
+
         }
         catch {
 
@@ -76,7 +70,6 @@ class VideoConnection {
             this.peerConnection.createOffer().then(VideoConnection.createdDescription);
         }
 
-        // if (this.isDesktop) {
         this.peerConnection.onsignalingstatechange = () => {
             console.log('Signaling State:', VideoConnection.peerConnection.signalingState);
         };
@@ -85,8 +78,9 @@ class VideoConnection {
         };
         this.peerConnection.oniceconnectionstatechange = () => {
             console.log('ICE Connection State:', VideoConnection.peerConnection.iceConnectionState);
-            if (VideoConnection.peerConnection.iceConnectionState === "connected") {
+            if (VideoConnection.peerConnection.iceConnectionState === "connected" && document.getElementById("mobileTag")) {
                 setTimeout(()=>{
+                    WebSocketConnection.WS.send(JSON.stringify({ 'data': "mobile disconnecting from WS", 'type': "device-msg" }));
                     WebSocketConnection.close();
                 },5000);
             }
