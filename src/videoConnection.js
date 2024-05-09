@@ -57,11 +57,13 @@ class VideoConnection {
         this.peerConnection.onicecandidate = this.gotIceCandidate;
         this.peerConnection.ontrack = this.gotRemoteStream;
 
+        // put in initiliz
+        for (const track of this.localStream.getTracks()) {
+            this.peerConnection.addTrack(track, this.localStream);
+        }
 
-        if (isInitializer || true) {
-            for (const track of this.localStream.getTracks()) {
-                this.peerConnection.addTrack(track, this.localStream);
-            }
+        if (isInitializer) {
+
             this.peerConnection.createOffer().then(this.createdDescription);
         }
 
@@ -78,6 +80,7 @@ class VideoConnection {
         }
     }
     static handleServerMessage(message) {
+        console.log(message)
         if (!this.peerConnection) start(false);
 
         const signal = JSON.parse(message.data);
@@ -88,19 +91,20 @@ class VideoConnection {
                 if (signal.data.type !== 'offer') return;
 
                 this.peerConnection.createAnswer().then(this.createdDescription);
-            }).catch(console.log("fail 90"));
+            });
         } else if (signal.type === "ice") {
             this.peerConnection.addIceCandidate(new RTCIceCandidate(signal.data));
         }
     }
     static gotIceCandidate(event) {
+        console.log('sending ICE');
         if (event.candidate != null) {
             WebSocketConnection.WS.send(JSON.stringify({ 'data': event.candidate, 'type': "ice" }));
         }
     }
 
     static createdDescription(description) {
-        console.log('got description');
+        console.log('Sending description', description);
 
         VideoConnection.peerConnection.setLocalDescription(description).then(() => {
             WebSocketConnection.WS.send(JSON.stringify({ 'data': VideoConnection.peerConnection.localDescription, 'type': "sdp" }));
