@@ -3,9 +3,9 @@
     src: url('./Roboto-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-  }
+}
 
-body{
+body {
     margin: 0;
     padding: 0;
     background-color: rgb(35, 34, 34);
@@ -14,7 +14,8 @@ body{
     align-content: center;
     justify-content: center;
 }
-h1{
+
+h1 {
     font-family: 'Roboto', sans-serif;
     font-size: 60px;
     margin: 0;
@@ -22,17 +23,18 @@ h1{
     /* height: 80px; */
     line-height: 80px;
     text-align: center;
-   
-    color:white;
+
+    color: white;
 
 }
-div{
+
+div {
     display: flex;
     align-content: center;
     justify-content: center;
 }
 
-a{
+a {
     font-family: 'Roboto', sans-serif;
     font-size: 20px;
     width: 150px;
@@ -47,9 +49,9 @@ a{
     align-content: center;
     justify-items: center;
     text-decoration: none;
-    color:white
+    color: white
 }
-a:hover
-{
+
+a:hover {
     transform: scale(0.98);
 }
