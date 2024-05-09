@@ -25,6 +25,7 @@ class WebSocketConnection{
     }
     static close()
     {
+        console.log("websocket closed");
         this.WS.close();
     }
 }
