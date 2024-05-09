@@ -70,28 +70,28 @@ class VideoConnection {
                 // {'urls': 'stun:stun.l.google.com:19302'},
             ]
         };
-        this.peerConnection = new RTCPeerConnection(peerConnectionConfig);
-        this.peerConnection.onicecandidate = this.gotIceCandidate;
-        this.peerConnection.ontrack = this.gotRemoteStream;
+        VideoConnection.peerConnection = new RTCPeerConnection(peerConnectionConfig);
+        VideoConnection.peerConnection.onicecandidate = VideoConnection.gotIceCandidate;
+        VideoConnection.peerConnection.ontrack = VideoConnection.gotRemoteStream;
 
         // put in initiliz
-        for (const track of this.localStream.getTracks()) {
-            this.peerConnection.addTrack(track, this.localStream);
+        for (const track of VideoConnection.localStream.getTracks()) {
+            VideoConnection.peerConnection.addTrack(track, VideoConnection.localStream);
         }
 
         if (isInitializer) {
 
-            this.peerConnection.createOffer().then(this.createdDescription);
+            VideoConnection.peerConnection.createOffer().then(VideoConnection.createdDescription);
         }
 
-        if (this.isDesktop) {
-            this.peerConnection.onsignalingstatechange = () => {
+        if (VideoConnection.isDesktop) {
+            VideoConnection.peerConnection.onsignalingstatechange = () => {
                 console.log('Signaling State:', VideoConnection.peerConnection.signalingState);
             };
-            this.peerConnection.onicegatheringstatechange = () => {
+            VideoConnection.peerConnection.onicegatheringstatechange = () => {
                 console.log('ICE Gathering State:', VideoConnection.peerConnection.iceGatheringState);
             };
-            this.peerConnection.oniceconnectionstatechange = () => {
+            VideoConnection.peerConnection.oniceconnectionstatechange = () => {
                 console.log('ICE Connection State:', VideoConnection.peerConnection.iceConnectionState);
             };
         }
