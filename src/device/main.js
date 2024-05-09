@@ -53,7 +53,7 @@ const setupMediaRecorder = async () =>
 const peerConnectionConfig = {
     'iceServers': [
         // {'urls': 'stun:192.168.0.1:3478'},
-        { 'urls': 'stun:stun.stunprotocol.org:3478' },
+        //{ 'urls': 'stun:stun.stunprotocol.org:3478' },
         // {'urls': 'stun:stun.l.google.com:19302'},
     ]
 };
@@ -74,10 +74,6 @@ const main = async () =>
 
         localStream = await setupMediaRecorder();
 
-        for (const track of localStream.getTracks())
-        {
-            peerConnection.addTrack(track, localStream);
-        }
 
 
 
@@ -168,6 +164,12 @@ const loadRTC = () =>
         socket.send(JSON.stringify({ 'data': `ICE Connection State: ${peerConnection.iceConnectionState}`, 'type': "device-msg" }));
         console.log('ICE Connection State:', peerConnection.iceConnectionState);
     };
+
+    for (const track of localStream.getTracks())
+    {
+        peerConnection.addTrack(track, localStream);
+    }
+
 };
 
 const sendHTTP = async (data) =>
