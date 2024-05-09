@@ -6,16 +6,16 @@ class VideoConnection {
     static isDesktop = false;
 
     static {
-        try {
-            this.localVideo = document.getElementById('localVideo');
-            if (this.localVideo) {
-                this.getVideoStream();
-            }
+        // try {
+        this.localVideo = document.getElementById('localVideo');
+        if (this.localVideo) {
+            this.getVideoStream();
         }
-        catch {
-            this.isDesktop = true;
-            console.log("No local video stream, if this is desktop then okay.");
-        }
+        // }
+        // catch {
+        //     this.isDesktop = true;
+        //     console.log("No local video stream, if this is desktop then okay.");
+        // }
         this.remoteVideo = document.getElementById('remoteVideo');
 
     }
@@ -67,17 +67,17 @@ class VideoConnection {
             this.peerConnection.createOffer().then(VideoConnection.createdDescription);
         }
 
-        if (this.isDesktop) {
-            this.peerConnection.onsignalingstatechange = () => {
-                console.log('Signaling State:', VideoConnection.peerConnection.signalingState);
-            };
-            this.peerConnection.onicegatheringstatechange = () => {
-                console.log('ICE Gathering State:', VideoConnection.peerConnection.iceGatheringState);
-            };
-            this.peerConnection.oniceconnectionstatechange = () => {
-                console.log('ICE Connection State:', VideoConnection.peerConnection.iceConnectionState);
-            };
-        }
+        // if (this.isDesktop) {
+        this.peerConnection.onsignalingstatechange = () => {
+            console.log('Signaling State:', VideoConnection.peerConnection.signalingState);
+        };
+        this.peerConnection.onicegatheringstatechange = () => {
+            console.log('ICE Gathering State:', VideoConnection.peerConnection.iceGatheringState);
+        };
+        this.peerConnection.oniceconnectionstatechange = () => {
+            console.log('ICE Connection State:', VideoConnection.peerConnection.iceConnectionState);
+        };
+        // }
     }
 
     static gotIceCandidate(event) {
