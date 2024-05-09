@@ -45,7 +45,7 @@ class VideoConnection {
         }
     }
     static start(isInitializer) {
-        WebSocketConnection.WS.onmessage = this.handleServerMessage;
+        WebSocketConnection.WS.onmessage = VideoConnection.handleServerMessage;
 
         const peerConnectionConfig = {
             'iceServers': [
