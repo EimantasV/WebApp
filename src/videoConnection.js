@@ -6,18 +6,17 @@ class VideoConnection {
     static isDesktop = false;
 
     static {
-        try {
-            this.localVideo = document.getElementById('localVideo');
-            if (this.localVideo) {
-                this.isDesktop = true;
-                console.log("No local video stream, if this is desktop then okay.");
-                this.getVideoStream();
-            }
+
+        this.localVideo = document.getElementById('localVideo');
+        if (this.localVideo) {
+            this.getVideoStream();
         }
-        catch {
+        else
+        {
             this.isDesktop = true;
             console.log("No local video stream, if this is desktop then okay.");
         }
+
         this.remoteVideo = document.getElementById('remoteVideo');
 
     }
