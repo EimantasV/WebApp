@@ -5,7 +5,7 @@ class ServerWSS {
         const { WebSocketServer } = require("ws");
         this.WebSocketServer = WebSocketServer;
     }
-    static start({ serverHTTPS, sendUDP }) {
+    static start({ serverHTTPS, ServerUDP }) {
         this.wss = new this.WebSocketServer({ server: serverHTTPS });
         this.wss.on("listening", () => {
             console.log("WSS server is online");
@@ -27,7 +27,7 @@ class ServerWSS {
                         break;
 
                     case "com":
-                        sendUDP(`${input.data}`);
+                        ServerUDP.send(`${input.data}`);
                         break;
 
                     case "device-msg":
