@@ -68,6 +68,11 @@ const start = async () => {
     peerConnection.onicecandidate = iceCandidate;
     peerConnection.ontrack = gotTrack;
 
+    for (const track of localStream.getTracks())
+    {
+        peerConnection.addTrack(track, localStream);
+    }
+
     peerConnection.onsignalingstatechange = () => {
         console.log('Signaling State:', peerConnection.signalingState);
     };
