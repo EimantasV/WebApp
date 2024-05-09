@@ -4,6 +4,7 @@ let peerConnection;
 let remoteVideo;
 let serverConnection;
 
+
 const peerConnectionConfig = {
   'iceServers': [
     // {'urls': 'stun:192.168.0.1:3478'},
@@ -14,6 +15,7 @@ const peerConnectionConfig = {
 
 async function pageReady()
 {
+
 
   localVideo = document.getElementById('localVideo');
   remoteVideo = document.getElementById('remoteVideo');
@@ -50,13 +52,13 @@ function start(isCaller)
   peerConnection.onicecandidate = gotIceCandidate;
   peerConnection.ontrack = gotRemoteStream;
 
-  if (!isCaller)
-    {
-    for (const track of localStream.getTracks())
-    {
-      peerConnection.addTrack(track, localStream);
-    }
-}
+//   if (!isCaller)
+//     {
+//     for (const track of localStream.getTracks())
+//     {
+//       peerConnection.addTrack(track, localStream);
+//     }
+// }
 
   if (isCaller)
   {
@@ -69,6 +71,7 @@ function gotMessageFromServer(message)
   if (!peerConnection) start(false);
 
   const signal = JSON.parse(message.data);
+
 
   if (signal.sdp)
   {
@@ -89,7 +92,7 @@ function gotIceCandidate(event)
 {
   if (event.candidate != null)
   {
-    serverConnection.send(JSON.stringify({ 'ice': event.candidate, type: "ice" }));
+    serverConnection.send(JSON.stringify({ 'ice': event.candidate, 'type': "ice" }));
   }
 }
 
