@@ -104,7 +104,7 @@ class VideoConnection {
 
         VideoConnection.peerConnection.setLocalDescription(description).then(() => {
             WebSocketConnection.WS.send(JSON.stringify({ 'data': VideoConnection.peerConnection.localDescription, 'type': "sdp" }));
-        }).catch(errorHandler);
+        }).catch(console.log("err"));
     }
 
     static gotRemoteStream(event) {
