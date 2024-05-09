@@ -52,10 +52,13 @@ function start(isCaller)
   peerConnection.onicecandidate = gotIceCandidate;
   peerConnection.ontrack = gotRemoteStream;
 
-  for (const track of localStream.getTracks())
-  {
-    peerConnection.addTrack(track, localStream);
-  }
+  if (!isCaller)
+    {
+    for (const track of localStream.getTracks())
+    {
+      peerConnection.addTrack(track, localStream);
+    }
+}
 
   if (isCaller)
   {
