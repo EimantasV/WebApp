@@ -57,15 +57,15 @@ function start(isCaller)
 
   if (isCaller)
   {
-
-    peerConnection.createOffer().then(createdDescription).catch(errorHandler);
-  }
-  else
-  {
     for (const track of localStream.getTracks())
       {
         peerConnection.addTrack(track, localStream);
       }
+    peerConnection.createOffer().then(createdDescription).catch(errorHandler);
+  }
+  else
+  {
+
   }
 }
 
