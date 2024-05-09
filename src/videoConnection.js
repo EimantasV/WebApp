@@ -17,7 +17,7 @@ class VideoConnection {
             console.log("No local video stream, if this is desktop then okay.");
         }
         this.remoteVideo = document.getElementById('remoteVideo');
-        WebSocketConnection.WS.onmessage = this.handleServerMessage;
+        WebSocketConnection.WS.onmessage = VideoConnection.handleServerMessage;
     }
 
     static async getVideoStream() {
@@ -46,19 +46,19 @@ class VideoConnection {
     }
         static handleServerMessage(message) {
         console.log("From server:", message);
-        if (!this.peerConnection) this.start(false);
+        if (!VideoConnection.peerConnection) VideoConnection.start(false);
 
         const signal = JSON.parse(message.data);
 
         if (signal.type === "sdp") {
-            this.peerConnection.setRemoteDescription(new RTCSessionDescription(signal.data)).then(() => {
+            VideoConnection.peerConnection.setRemoteDescription(new RTCSessionDescription(signal.data)).then(() => {
                 // Only create answers in response to offers
                 if (signal.data.type !== 'offer') return;
 
-                this.peerConnection.createAnswer().then(this.createdDescription);
+                VideoConnection.peerConnection.createAnswer().then(VideoConnection.createdDescription);
             });
         } else if (signal.type === "ice") {
-            this.peerConnection.addIceCandidate(new RTCIceCandidate(signal.data));
+            VideoConnection.peerConnection.addIceCandidate(new RTCIceCandidate(signal.data));
         }
     }
     static start(isInitializer) {
