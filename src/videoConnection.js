@@ -62,7 +62,7 @@ class VideoConnection {
             for (const track of this.localStream.getTracks()) {
                 this.peerConnection.addTrack(track, this.localStream);
             }
-            this.peerConnection.createOffer().then(this.createdDescription).catch(errorHandler);
+            this.peerConnection.createOffer().then(this.createdDescription);
         }
 
         if (this.isDesktop) {
@@ -87,10 +87,10 @@ class VideoConnection {
                 // Only create answers in response to offers
                 if (signal.data.type !== 'offer') return;
 
-                this.peerConnection.createAnswer().then(this.createdDescription).catch(console.log("fail 90"));
+                this.peerConnection.createAnswer().then(this.createdDescription);
             }).catch(console.log("fail 90"));
         } else if (signal.type === "ice") {
-            this.peerConnection.addIceCandidate(new RTCIceCandidate(signal.data)).catch(console.log("fail 90"));
+            this.peerConnection.addIceCandidate(new RTCIceCandidate(signal.data));
         }
     }
     static gotIceCandidate(event) {
@@ -104,7 +104,7 @@ class VideoConnection {
 
         VideoConnection.peerConnection.setLocalDescription(description).then(() => {
             WebSocketConnection.WS.send(JSON.stringify({ 'data': VideoConnection.peerConnection.localDescription, 'type': "sdp" }));
-        }).catch(console.log("err"));
+        });
     }
 
     static gotRemoteStream(event) {
