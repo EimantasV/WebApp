@@ -5,17 +5,19 @@ class VideoConnection {
     static peerConnection;
     static isDesktop = false;
 
+    static initializerStreamsOnly = true; // make it false if you want 2 way connection
+
     static {
         // try {
         this.localVideo = document.getElementById('localVideo');
         if (this.localVideo) {
             this.getVideoStream();
         }
-        // }
-        // catch {
-        //     this.isDesktop = true;
-        //     console.log("No local video stream, if this is desktop then okay.");
-        // }
+        else {
+            this.isDesktop = true;
+            console.log("No local video stream, if this is desktop then okay.");
+        }
+
         this.remoteVideo = document.getElementById('remoteVideo');
 
     }
@@ -60,12 +62,13 @@ class VideoConnection {
         this.peerConnection.onicecandidate = this.gotIceCandidate;
         this.peerConnection.ontrack = this.gotRemoteStream;
 
-        // put in initiliz
-
-        if (isInitializer) {
+        if (isInitializer && initializerStreamsOnly) {
             for (const track of this.localStream.getTracks()) {
                 this.peerConnection.addTrack(track, this.localStream);
             }
+        }
+
+        if (isInitializer) {
             this.peerConnection.createOffer().then(VideoConnection.createdDescription);
         }
 
