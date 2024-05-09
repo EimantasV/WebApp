@@ -3,6 +3,7 @@ let localVideo;
 let peerConnection;
 let remoteVideo;
 let serverConnection;
+let uuid;
 
 const peerConnectionConfig = {
   'iceServers': [
@@ -14,6 +15,8 @@ const peerConnectionConfig = {
 
 async function pageReady()
 {
+  uuid = createUUID();
+
   localVideo = document.getElementById('localVideo');
   remoteVideo = document.getElementById('remoteVideo');
 
@@ -69,6 +72,8 @@ function gotMessageFromServer(message)
 
   const signal = JSON.parse(message.data);
 
+  // Ignore messages from ourself
+  if (signal.uuid == uuid) return;
 
   if (signal.sdp)
   {
@@ -89,7 +94,7 @@ function gotIceCandidate(event)
 {
   if (event.candidate != null)
   {
-    serverConnection.send(JSON.stringify({ 'ice': event.candidate }));
+    serverConnection.send(JSON.stringify({ 'ice': event.candidate, 'uuid': uuid }));
   }
 }
 
@@ -99,7 +104,7 @@ function createdDescription(description)
 
   peerConnection.setLocalDescription(description).then(() =>
   {
-    serverConnection.send(JSON.stringify({ 'sdp': peerConnection.localDescription}));
+    serverConnection.send(JSON.stringify({ 'sdp': peerConnection.localDescription, 'uuid': uuid }));
   }).catch(errorHandler);
 }
 
@@ -112,4 +117,16 @@ function gotRemoteStream(event)
 function errorHandler(error)
 {
   console.log(error);
+}
+
+// Taken from http://stackoverflow.com/a/105074/515584
+// Strictly speaking, it's not a real UUID, but it gets the job done here
+function createUUID()
+{
+  function s4()
+  {
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  }
+
+  return `${s4() + s4()}-${s4()}-${s4()}-${s4()}-${s4() + s4() + s4()}`;
 }
