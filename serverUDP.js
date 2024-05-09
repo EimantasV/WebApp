@@ -1,5 +1,4 @@
-class ServerUDP
-{
+class ServerUDP {
     static dgram;
     static udpclient;
 
@@ -9,16 +8,12 @@ class ServerUDP
         console.log("UDP server online");
     }
 
-    static send(data)
-    {
-        this.udpclient.send(`${data}`, 12345, "192.168.0.2", (error) =>
-        {
-            if (error)
-            {
+    static send(data) {
+        this.udpclient.send(`${data}`, 12345, "192.168.0.2", (error) => {
+            if (error) {
                 console.error(`Error sending message: ${error}`);
-            } 
-            else
-            {
+            }
+            else {
                 console.log(`Message sent to '192.168.0.2:12345': ${data}`);
             }
         });

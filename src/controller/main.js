@@ -14,28 +14,22 @@ let localStream;
 let remoteStream;
 
 
-const main = async () =>
-{
-    try
-    {
+const main = async () => {
+    try {
         socket = new WebSocket(`wss://${window.location.hostname}:3000`);
 
         // wait getCamerasSpecs();
-        socket.addEventListener('error', (error) =>
-        {
+        socket.addEventListener('error', (error) => {
             console.log('Could not connect');
         });
-        socket.addEventListener('open', () =>
-        {
+        socket.addEventListener('open', () => {
             console.log('WebSocket connection opened');
         });
 
-        socket.addEventListener("message", async (_msg) =>
-        {
+        socket.addEventListener("message", async (_msg) => {
             const msg = JSON.parse(_msg.data);
             console.log(msg);
-            switch (msg.type)
-            {
+            switch (msg.type) {
                 //   case "req":
                 //       console.log("Sending offer...");
                 //       const offer = await createOffer();
@@ -61,31 +55,26 @@ const main = async () =>
             }
         });
 
-    } catch (error)
-    {
+    } catch (error) {
         console.error('Error:', error);
     }
 };
 
 main();
 
-const start = async () =>
-{
+const start = async () => {
     peerConnection = new RTCPeerConnection(peerConnectionConfig);
 
     peerConnection.onicecandidate = iceCandidate;
     peerConnection.ontrack = gotTrack;
 
-    peerConnection.onsignalingstatechange = () =>
-    {
+    peerConnection.onsignalingstatechange = () => {
         console.log('Signaling State:', peerConnection.signalingState);
     };
-    peerConnection.onicegatheringstatechange = () =>
-    {
+    peerConnection.onicegatheringstatechange = () => {
         console.log('ICE Gathering State:', peerConnection.iceGatheringState);
     };
-    peerConnection.oniceconnectionstatechange = () =>
-    {
+    peerConnection.oniceconnectionstatechange = () => {
         console.log('ICE Connection State:', peerConnection.iceConnectionState);
     };
 
@@ -94,33 +83,28 @@ const start = async () =>
     socket.send(JSON.stringify(offer));
 };
 
-const gotTrack = event =>
-{
+const gotTrack = event => {
     console.log("got track ans");
     document.getElementById("user-2").srcObject = event.streams[0];
 
 };
 
-const iceCandidate = (event) =>
-{
+const iceCandidate = (event) => {
     console.log("ice gen?");
     if (event.candidate != null)
         socket.send(JSON.stringify({ 'data': event.candidate, 'type': "ice" }));
 };
 
-const createOffer = async () =>
-{
+const createOffer = async () => {
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(new RTCSessionDescription(offer));
     return peerConnection.localDescription;
 };
 
-const getAnswer = (answer) =>
-{
+const getAnswer = (answer) => {
     peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
 };
 
-const sendHTTP = (data) =>
-{
+const sendHTTP = (data) => {
     socket.send(JSON.stringify({ "type": "com", data: data }));
 };

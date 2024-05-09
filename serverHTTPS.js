@@ -1,5 +1,4 @@
-class ServerHTTPS
-{
+class ServerHTTPS {
     //includes
     static express;
     static path;
@@ -26,8 +25,7 @@ class ServerHTTPS
         this.fs = require("fs");
     }
 
-    static start()
-    {
+    static start() {
         this.privateKey = this.fs.readFileSync("./key.pem", "utf8");
         this.certificate = this.fs.readFileSync("./cert.pem", "utf8");
         this.credentials = { key: this.privateKey, cert: this.certificate, passphrase: "1234" };
@@ -37,9 +35,8 @@ class ServerHTTPS
 
         this.app.use(this.express.static(this.path.join(__dirname, "src")));
 
-        this.server.listen(this.port, () =>
-        {
-          console.log(`Server is running on https://localhost:${this.port}`);
+        this.server.listen(this.port, () => {
+            console.log(`Server is running on https://localhost:${this.port}`);
         });
     }
 

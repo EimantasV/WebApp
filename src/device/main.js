@@ -1,14 +1,11 @@
-const getCamerasSpecs = async () =>
-{
+const getCamerasSpecs = async () => {
     const devices = await navigator.mediaDevices.enumerateDevices();
 
-    for (const device of devices)
-    {
+    for (const device of devices) {
         // console.log(device);
 
         // socket.send(JSON.stringify(device));
-        if ('getCapabilities' in device)
-        {
+        if ('getCapabilities' in device) {
             const capabilities = device.getCapabilities();
             console.log(JSON.stringify(capabilities));
             socket.send(JSON.stringify(capabilities));
@@ -17,8 +14,7 @@ const getCamerasSpecs = async () =>
     }
 };
 
-const setupMediaRecorder = async () =>
-{
+const setupMediaRecorder = async () => {
     const constraints = {
         // video: true,
         video: {
@@ -34,15 +30,13 @@ const setupMediaRecorder = async () =>
         audio: true
     };
 
-    try
-    {
+    try {
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         const videoElement = document.getElementById('user-1');
         videoElement.srcObject = stream;
         return stream;
     }
-    catch (error)
-    {
+    catch (error) {
         socket.send(JSON.stringify({ type: "device-msg", data: `Media recorder: ${error}` }));
         console.error('Error accessing the camera with constraints:', error);
     }
@@ -64,30 +58,24 @@ let localStream;
 let remoteStream;
 
 
-const main = async () =>
-{
-    try
-    {
+const main = async () => {
+    try {
         socket = new WebSocket(`wss://${window.location.hostname}:3000`);
 
         localStream = await setupMediaRecorder();
 
         // wait getCamerasSpecs();
-        socket.addEventListener('error', (error) =>
-        {
+        socket.addEventListener('error', (error) => {
             console.log('Could not connect');
         });
-        socket.addEventListener('open', () =>
-        {
+        socket.addEventListener('open', () => {
             console.log('WebSocket connection opened');
         });
 
-        socket.addEventListener("message", async (_msg) =>
-        {
+        socket.addEventListener("message", async (_msg) => {
             const msg = JSON.parse(_msg.data);
             console.log(msg);
-            switch (msg.type)
-            {
+            switch (msg.type) {
                 // case "req":
                 //     console.log("Sending offer...");
                 //     const offer = await createOffer();
@@ -118,8 +106,7 @@ const main = async () =>
             }
         });
 
-    } catch (error)
-    {
+    } catch (error) {
         socket.send(JSON.stringify({ 'data': `Main error: ${error}`, 'type': "device-msg" }));
         console.error('Error:', error);
     }
@@ -127,56 +114,51 @@ const main = async () =>
 
 main();
 
-const loadRTC = () =>
-{
+const loadRTC = () => {
     peerConnection = new RTCPeerConnection(peerConnectionConfig);
 
-    for (const track of localStream.getTracks())
-    {
-        peerConnection.addTrack(track, localStream);
-    }
+
     peerConnection.onicecandidate = iceCandidate;
 
+    for (const track of localStream.getTracks()) {
+        peerConnection.addTrack(track, localStream);
+    }
 
-    peerConnection.onsignalingstatechange = () =>
-    {
-        socket.send(JSON.stringify({ 'data': `Signaling State: ${peerConnection.signalingState}`, 'type': "device-msg" }));
-        console.log('Signaling State:', peerConnection.signalingState);
-    };
-    peerConnection.onicegatheringstatechange = () =>
-    {
-        socket.send(JSON.stringify({ 'data': `ICE Gathering State: ${peerConnection.iceGatheringState}`, 'type': "device-msg" }));
-        console.log('ICE Gathering State:', peerConnection.iceGatheringState);
-    };
-    peerConnection.oniceconnectionstatechange = () =>
-    {
-        socket.send(JSON.stringify({ 'data': `ICE Connection State: ${peerConnection.iceConnectionState}`, 'type': "device-msg" }));
-        console.log('ICE Connection State:', peerConnection.iceConnectionState);
-    };
+    // peerConnection.onsignalingstatechange = () =>
+    // {
+    //     socket.send(JSON.stringify({ 'data': `Signaling State: ${peerConnection.signalingState}`, 'type': "device-msg" }));
+    //     console.log('Signaling State:', peerConnection.signalingState);
+    // };
+    // peerConnection.onicegatheringstatechange = () =>
+    // {
+    //     socket.send(JSON.stringify({ 'data': `ICE Gathering State: ${peerConnection.iceGatheringState}`, 'type': "device-msg" }));
+    //     console.log('ICE Gathering State:', peerConnection.iceGatheringState);
+    // };
+    // peerConnection.oniceconnectionstatechange = () =>
+    // {
+    //     socket.send(JSON.stringify({ 'data': `ICE Connection State: ${peerConnection.iceConnectionState}`, 'type': "device-msg" }));
+    //     console.log('ICE Connection State:', peerConnection.iceConnectionState);
+    // };
 
 
 
 };
 
-const iceCandidate = (event) =>
-{
+const iceCandidate = (event) => {
     socket.send(JSON.stringify({ 'data': "ice gen?", 'type': "device-msg" }));
     console.log("ice gen?");
     if (event.candidate != null)
         socket.send(JSON.stringify({ 'data': event.candidate, 'type': "ice" }));
 };
 
-const sendHTTP = async (data) =>
-{
+const sendHTTP = async (data) => {
     const url = 'http://192.168.0.2';
 
-    try
-    {
+    try {
         const response = await fetch(url);
 
         // Check if the request was successful (status code 200 OK)
-        if (!response.ok)
-        {
+        if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
@@ -185,16 +167,14 @@ const sendHTTP = async (data) =>
 
         // Handle the data from the response
         console.log(data);
-    } catch (error)
-    {
+    } catch (error) {
         // Handle errors during the fetch
         console.error('Fetch error:', error);
     }
 };
 
 
-const createAnswer = async (offer) =>
-{
+const createAnswer = async (offer) => {
     await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
     let answer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(new RTCSessionDescription(answer));
@@ -202,12 +182,10 @@ const createAnswer = async (offer) =>
 };
 
 
-async function makeHttpRequest(postdata)
-{
+async function makeHttpRequest(postdata) {
     const url = `http://192.168.61.99:4000`;
     // log(url)
-    try
-    {
+    try {
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -216,16 +194,14 @@ async function makeHttpRequest(postdata)
             body: JSON.stringify(postdata),
         });
 
-        if (!response.ok)
-        {
+        if (!response.ok) {
             // log(`HTTP error! Status: ${response.status}`)
 
         }
 
         const data = await response.json();
         // log(`HTTP Request Successful: ${data}`);
-    } catch (error)
-    {
+    } catch (error) {
         socket.send(JSON.stringify({ type: "debug", data: `HTTP Error: ${error}` }));
         // log(`HTTP Error: ${error}`);
     }
