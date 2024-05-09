@@ -40,6 +40,7 @@ class ServerWSS {
                         break;
 
                     default:
+                        otherClient.send(`${msg}`);
                         console.log(`${msg}`);
                         break;
                 }
