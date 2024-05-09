@@ -80,7 +80,7 @@ class VideoConnection {
         }
     }
     static handleServerMessage(message) {
-        console.log(message)
+        console.log("From server:", message);
         if (!VideoConnection.peerConnection) VideoConnection.start(false);
 
         const signal = JSON.parse(message.data);
